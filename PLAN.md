@@ -348,3 +348,14 @@ Payroll/WPS, e-invoicing integration with any authority, online payment gateways
 ---
 
 **Next step:** please review, answer the questions in §11 (or say "use defaults"), and approve — then I start **Phase 1**. I will not write feature code until you approve.
+
+---
+
+## 14. Update — Supabase decision (approved by owner; defaults accepted for all §11 questions)
+
+- The database is a **Supabase project (`group-erp`, region ap-south-1 / Mumbai, nearest to Qatar)**. It is plain PostgreSQL 17, so all the planned triggers and constraints work unchanged.
+- **SQL files in `supabase/migrations/` are the source of truth** for the schema (instead of Prisma migrations). Each file is tested on a local Postgres first, then applied to Supabase.
+- **Security:** every table has Row Level Security switched on with *no public policies*, so the Supabase public API cannot read or write business data. Only our app server (private database connection) can. Company/permission checks stay in the service layer.
+- **Login:** Supabase Auth (passwords hashed, sessions, optional TOTP 2FA) replaces the self-built login. Our `profiles` table mirrors the Auth user id.
+- Docker Compose remains for fully-offline local use; the app points at either local Postgres or Supabase via `DATABASE_URL`.
+- All §11 questions: **defaults accepted**; each will be recorded in `ASSUMPTIONS.md`.
